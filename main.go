@@ -54,8 +54,22 @@ func main() {
 	a, _ := strconv.Atoi(mathExpression[0])
 	b, _ := strconv.Atoi(mathExpression[2])
 	sign := mathExpression[1]
-	if sign == "+" || sign == "-" || sign == "*" || sign == "/" {
-		res = calc.Calc(a, b, sign)
+	if (a < 1 || a > 10) || (b < 1 || b > 10) {
+		fmt.Println("Одно из чисел не в допустимом диапазоне")
+		return
 	}
+	signs := [4]string{"+", "-", "*", "/"}
+	signsBool := false
+	for _, v := range signs {
+		if sign == v {
+			signsBool = true
+			break
+		}
+	}
+	if !signsBool {
+		fmt.Println("Нет такой мат.операции")
+		return
+	}
+	res = calc.Calc(a, b, sign)
 	fmt.Println(res)
 }
