@@ -1,6 +1,9 @@
 package convertNum
 
 func ToRoman(num int) string {
+	if num <= 0 {
+		return "negative"
+	}
 	nums := []struct {
 		rom    string
 		arabic int

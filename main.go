@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	// "calc"
+	"calc"
 	cN "convertNum"
 	"fmt"
 	"os"
@@ -14,52 +14,63 @@ func inputUser() []string {
 	in := bufio.NewScanner(os.Stdin)
 	fmt.Print("Введите мат.выражение: ")
 	in.Scan()
-	mathExpression := strings.Split(in.Text(), " ")
+	text := in.Text()
+	mathExpression := strings.Split(text, " ")
 	return mathExpression
 }
-func arabOrRom(str string) (num int, typeNum string) {
-	num, err := strconv.Atoi(str)
-	if err == nil {
-		typeNum = "arabic"
-		return num, typeNum
-	}
-	if err != nil {
-		num = cN.ToArabic(str)
-		typeNum = "rom"
-		return num, typeNum
-	}
-	return
-}
+
 func main() {
-	fmt.Println(arabOrRom("G"))
-	// mathExpression := inputUser()
-	// if len(mathExpression) < 3 {
-	// 	fmt.Println("Строка не является математической операцией!")
-	// 	return
-	// }
-	// if len(mathExpression) > 3 {
-	// 	fmt.Println("Формат мат.операции не удовлетворяет заданию")
-	// 	return
-	// }
-	// aStr := mathExpression[0]
-	// bStr := mathExpression[2]
-	// a, b := arabOrRom(aStr, bStr)
-	// sign := mathExpression[1]
-	// if (a < 1 || a > 10) || (b < 1 || b > 10) {
-	// 	fmt.Println("Одно из чисел не в допустимом диапазоне")
-	// 	return
-	// }
-	// signs := [4]string{"+", "-", "*", "/"}
-	// signsBool := false
-	// for _, v := range signs {
-	// 	if sign == v {
-	// 		signsBool = true
-	// 		break
-	// 	}
-	// }
-	// if !signsBool {
-	// 	fmt.Println("Нет такой мат.операции")
-	// 	return
-	// }
-	// fmt.Println(calc.Calc(a, b, sign))
+	mathExpression := inputUser()
+	if len(mathExpression) < 3 {
+		fmt.Println("Строка не является мат.операцией!")
+		return
+	}
+	if len(mathExpression) > 3 {
+		fmt.Println("Формат мат.операции не удовлетворяет заданию")
+		return
+	}
+	aStr := mathExpression[0]
+	bStr := mathExpression[2]
+	if strings.Contains(aStr, ".") || strings.Contains(bStr, ".") {
+		fmt.Println("Калькулятор умеет работать только с целыми числами.")
+		return
+	}
+	a, aType := cN.ArabicOrRom(mathExpression[0])
+	b, bType := cN.ArabicOrRom(mathExpression[2])
+	if aType == "err" || bType == "err" {
+		fmt.Println("Строка не является мат.операцией!")
+		return
+	}
+	if aType != bType {
+		fmt.Println("Используются одновременно разные системы счисления")
+		return
+	}
+	if (a < 1 || a > 10) || (b < 1 || b > 10) {
+		fmt.Println("Одно из чисел не в допустимом диапазоне")
+		return
+	}
+	sign := mathExpression[1]
+	signs := [4]string{"+", "-", "*", "/"}
+	signsBool := false
+	for _, v := range signs {
+		if sign == v {
+			signsBool = true
+			break
+		}
+	}
+	if !signsBool {
+		fmt.Println("Нет такой мат.операции")
+		return
+	}
+	res := ""
+	resTmp := calc.Calc(a, b, sign)
+	res = strconv.Itoa(resTmp)
+	if aType == "rom" && bType == "rom" {
+		res = cN.ToRoman(resTmp)
+	}
+	if res == "negative" {
+		fmt.Println("В римской СС нет 0 и отрицательных чисед")
+		return
+	}
+	fmt.Println(res)
 }
