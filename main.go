@@ -21,10 +21,9 @@ func getInput() []string {
 	for _, v := range signs {
 		if strings.Contains(text, v) {
 			sign = v
-			break
+			text = strings.Replace(text, sign, " "+sign+" ", 1)
 		}
 	}
-	text = strings.Replace(text, sign, " "+sign+" ", 1)
 	mathExpression := strings.Split(text, " ")
 	return mathExpression
 }
