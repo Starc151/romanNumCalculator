@@ -10,17 +10,27 @@ import (
 	"strings"
 )
 
-func inputUser() []string {
+func getInput() []string {
+	signs := [4]string{"+", "-", "*", "/"}
+	sign := ""
 	in := bufio.NewScanner(os.Stdin)
 	fmt.Print("Введите мат.выражение: ")
 	in.Scan()
 	text := in.Text()
+	text = strings.ReplaceAll(text, " ", "")
+	for _, v := range signs {
+		if strings.Contains(text, v) {
+			sign = v
+			break
+		}
+	}
+	text = strings.Replace(text, sign, " "+sign+" ", 1)
 	mathExpression := strings.Split(text, " ")
 	return mathExpression
 }
 
 func main() {
-	mathExpression := inputUser()
+	mathExpression := getInput()
 	if len(mathExpression) < 3 {
 		fmt.Println("Строка не является мат.операцией!")
 		return
@@ -50,18 +60,6 @@ func main() {
 		return
 	}
 	sign := mathExpression[1]
-	signs := [4]string{"+", "-", "*", "/"}
-	signsBool := false
-	for _, v := range signs {
-		if sign == v {
-			signsBool = true
-			break
-		}
-	}
-	if !signsBool {
-		fmt.Println("Нет такой мат.операции")
-		return
-	}
 	res := ""
 	resTmp := calc.Calc(a, b, sign)
 	res = strconv.Itoa(resTmp)
