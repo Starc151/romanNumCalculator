@@ -1,6 +1,10 @@
 package convertNum
 
-import "strings"
+import (
+	"errors"
+	"quit"
+	"strings"
+)
 
 func ToArabic(num string) int {
 	nums := []struct {
@@ -30,6 +34,9 @@ func ToArabic(num string) int {
 				continue
 			}
 		}
+	}
+	if arabic == 0 {
+		quit.Quit(errors.New("Таких символов нет в римской СС"))
 	}
 	return arabic
 }

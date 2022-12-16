@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"calc"
 	cN "convertNum"
+	"errors"
 	"fmt"
 	"os"
+	"quit"
 	"strconv"
 	"strings"
 )
@@ -25,38 +27,25 @@ func getInput() []string {
 		}
 	}
 	mathExpression := strings.Split(text, " ")
+	if len(mathExpression) != 3 {
+		quit.Quit(errors.New("Строка не является мат.операцией"))
+	}
 	return mathExpression
 }
-
 func main() {
 	mathExpression := getInput()
-	if len(mathExpression) < 3 {
-		fmt.Println("Строка не является мат.операцией!")
-		return
-	}
-	if len(mathExpression) > 3 {
-		fmt.Println("Формат мат.операции не удовлетворяет заданию")
-		return
-	}
 	aStr := mathExpression[0]
 	bStr := mathExpression[2]
 	if strings.Contains(aStr, ".") || strings.Contains(bStr, ".") {
-		fmt.Println("Калькулятор умеет работать только с целыми числами.")
-		return
+		quit.Quit(errors.New("Калькулятор умеет работать только с целыми числами"))
 	}
 	a, aType := cN.ArabicOrRom(mathExpression[0])
 	b, bType := cN.ArabicOrRom(mathExpression[2])
-	if aType == "err" || bType == "err" {
-		fmt.Println("Строка не является мат.операцией!")
-		return
-	}
 	if aType != bType {
-		fmt.Println("Используются одновременно разные системы счисления")
-		return
+		quit.Quit(errors.New("Используются разные системы счисления"))
 	}
 	if (a < 1 || a > 10) || (b < 1 || b > 10) {
-		fmt.Println("Одно из чисел не в допустимом диапазоне")
-		return
+		quit.Quit(errors.New("Одно из чисел не в допустимом диапазоне"))
 	}
 	sign := mathExpression[1]
 	res := ""
@@ -64,10 +53,6 @@ func main() {
 	res = strconv.Itoa(resTmp)
 	if aType == "rom" && bType == "rom" {
 		res = cN.ToRoman(resTmp)
-	}
-	if res == "negative" {
-		fmt.Println("В римской СС нет 0 и отрицательных чисед")
-		return
 	}
 	fmt.Println(res)
 }

@@ -1,8 +1,13 @@
 package convertNum
 
+import (
+	"errors"
+	"quit"
+)
+
 func ToRoman(num int) string {
 	if num <= 0 {
-		return "negative"
+		quit.Quit(errors.New("В римской СС нет 0 и отрицательных чисед"))
 	}
 	nums := []struct {
 		rom    string
